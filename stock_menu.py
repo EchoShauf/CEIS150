@@ -1,5 +1,33 @@
+import matplotlib.pyplot as plt
 from stock_class import DailyData, Stock
 from datetime import datetime
+
+
+def main():
+    stock_list = []
+    option = ""
+    while option != "0":
+        print("\nStock Menu")
+        print("1 - Add Stock")
+        print("2 - List Stocks")
+        print("3 - Delete Stock")
+        print("4 - Add Daily Stock Data")
+        print("5 - Display Stock Chart")
+        print("0 - Exit Program")
+        option = input("Enter Menu Option: ")
+        if option == "1":
+            add_stock(stock_list)
+        elif option == "2":
+            list_stocks(stock_list)
+        elif option == "3":
+            delete_stock(stock_list)
+        elif option == "4":
+            add_stock_data(stock_list)
+        elif option == "5":
+            display_chart(stock_list)
+        elif option != "0":
+            print("Invalid Option. Please try again.")
+
 
 def add_stock(stock_list):
     option = ""
@@ -14,7 +42,7 @@ def add_stock(stock_list):
 
 def list_stocks(stock_list):
     print("----- Stock List -----")
-    print("Symbol       Name                Shares")
+    print("Symbol       Name          1      Shares")
     print("-" * 40)
     for stock in stock_list:
         print(f"{stock.symbol:<14}{stock.name:<20}{stock.shares:.2f}")
@@ -66,28 +94,53 @@ def add_stock_data(stock_list):
     else:
         print("Symbol Not Found ***")
     _ = input("Press Enter to Continue ***")
+    
 
-def main():
-    stock_list = []
-    option = ""
-    while option != "0":
-        print("\nStock Menu")
-        print("1 - Add Stock")
-        print("2 - List Stocks")
-        print("3 - Delete Stock")
-        print("4 - Add Daily Stock Data")
-        print("0 - Exit Program")
-        option = input("Enter Menu Option: ")
-        if option == "1":
-            add_stock(stock_list)
-        elif option == "2":
-            list_stocks(stock_list)
-        elif option == "3":
-            delete_stock(stock_list)
-        elif option == "4":
-            add_stock_data(stock_list)
-        elif option != "0":
-            print("Invalid Option. Please try again.")
+def display_stock_chart(stock_list, symbol):
+       date = []
+       price = []
+       volume = []
+       company = ""
+
+       for stock in stock_list:
+           if stock.symbol == symbol:
+               company = stock.name
+               for dailyData in stock.DataList:
+                   date.append(dailyData.date)
+                   price.append(dailyData.close)
+                   volume.append(dailyData.volume)
+
+       plt.plot(date, price)
+       plt.xlabel('Date')
+       plt.ylabel('Price')
+       plt.title(company)
+       plt.plot(date, price, marker='o', linestyle='-', color='blue')
+       plt.show()
+
+def display_chart(stock_list):
+       print("Stock List: [", end="")
+       for stock in stock_list:
+           print(stock.symbol + " ", end="")
+       print("]")
+
+       symbol = input("Enter stock symbol: ").upper()
+       found = False
+
+       for stock in stock_list:
+           if stock.symbol == symbol:
+               found = True
+               current_stock = stock
+
+       if found:
+           display_stock_chart(stock_list, symbol)
+       else:
+           print("Error: Symbol not found.")
+
+       input("Press Enter to continue...")
 
 if __name__ == "__main__":
     main()
+
+
+
+
